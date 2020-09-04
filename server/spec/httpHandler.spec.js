@@ -22,7 +22,14 @@ describe('server responses', () => {
   });
 
   it('should respond to a GET request for a swim command', (done) => {
-    // write your test here
+    let {req, res} = server.mock('/', 'GET');
+    let possibleResonses = ['up', 'down', 'left', 'right'];
+
+    console.log('res._data.toString()', res._data.toString())
+
+    httpHandler.router(req, res);
+    expect(possibleResonses).to.include(res._data.toString());
+    // expect({a: 3, b: 4}).to.include({a: 3, b: 4});
     done();
   });
 
