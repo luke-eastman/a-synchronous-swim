@@ -21,7 +21,7 @@ module.exports.router = (req, res, next = ()=>{}) => {
 
     if (req.url === '/background.jpg') {
       console.log('fs', fs.readFile);
-      fs.readFile(__dirname + '/..' + req.url, function (err, ...data) {
+      fs.readFile(__dirname + '/..' + req.url, function (err, data) {
         if (err) {
           res.writeHead(404, headers);
           res.end(JSON.stringify(err));
@@ -48,9 +48,24 @@ module.exports.router = (req, res, next = ()=>{}) => {
     res.end();
     next(); // invoke next() at the end of a request to help with testing!
   } else if (req.method === 'POST') {
+    if (req.url === '/background.jpg') {
+      var fileData = Buffer.alloc(0);
 
-    res.writeHead(200, headers);
-    res.end();
-    next(); // invoke next() at the end of a request to help with testing!
+      req.on('data', chunk => {
+        fileData = Buffer.concat([fileData, chunk]);
+      });
+
+      req.on('end', ()=> {
+        fs.writeFile(__dirname + '/../background.jpg', fileData, (err) => {
+          res.writeHead(err ? 400 : 201, headers);
+          res.end();
+          next();
+        });
+      });
+    }
+
+    // next(); // invoke next() at the end of a request to help with testing!
   }
 };
+
+
