@@ -34,7 +34,7 @@ module.exports.router = (req, res, next = ()=>{}) => {
         next(); // invoke next() at the end of a request to help with testing!
         return ;
       });
-    } else {
+    } else if (req.url === '/') {
       res.writeHead(200, headers);
       var result = messageQueue.dequeue();
       if (result) {
@@ -42,6 +42,10 @@ module.exports.router = (req, res, next = ()=>{}) => {
       }
       res.end();
       next(); // invoke next() at the end of a request to help with testing!
+    } else {
+      res.writeHead(404, headers);
+      res.end();
+      next();
     }
   } else if (req.method === 'OPTIONS') {
     res.writeHead(200, headers);
