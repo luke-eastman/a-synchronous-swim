@@ -5,7 +5,8 @@ const expect = require('chai').expect;
 const server = require('./mockServer');
 
 const httpHandler = require('../js/httpHandler');
-
+const messageQueue = require('../js/messageQueue');
+const getRandom = require('../js/getRandom')
 
 
 describe('server responses', () => {
@@ -24,12 +25,11 @@ describe('server responses', () => {
   it('should respond to a GET request for a swim command', (done) => {
     let {req, res} = server.mock('/', 'GET');
     let possibleResonses = ['up', 'down', 'left', 'right'];
-
-    console.log('res._data.toString()', res._data.toString())
-
+    let randomDirection = getRandom.getRandom();
+    messageQueue.enqueue(randomDirection);
+    httpHandler.initialize(messageQueue);
     httpHandler.router(req, res);
     expect(possibleResonses).to.include(res._data.toString());
-    // expect({a: 3, b: 4}).to.include({a: 3, b: 4});
     done();
   });
 
