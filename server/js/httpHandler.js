@@ -16,9 +16,12 @@ module.exports.initialize = (queue) => {
 
 module.exports.router = (req, res, next = ()=>{}) => {
   console.log('Serving request type ' + req.method + ' for url ' + req.url);
+
   if (req.method === 'GET') {
+
     if (req.url === '/background.jpg') {
-      fs.readFile(__dirname + '/..' + req.url, function (err, data) {
+      console.log('fs', fs.readFile);
+      fs.readFile(__dirname + '/..' + req.url, function (err, ...data) {
         if (err) {
           res.writeHead(404, headers);
           res.end(JSON.stringify(err));
@@ -28,19 +31,26 @@ module.exports.router = (req, res, next = ()=>{}) => {
         res.writeHead(200, headers);
         res.write(data);
         res.end();
+        next(); // invoke next() at the end of a request to help with testing!
         return ;
       });
-    } else if (req.url === '/') {
+    } else {
       res.writeHead(200, headers);
       var result = messageQueue.dequeue();
       if (result) {
         res.write(result);
-        res.end();
       }
+      res.end();
+      next(); // invoke next() at the end of a request to help with testing!
     }
   } else if (req.method === 'OPTIONS') {
     res.writeHead(200, headers);
     res.end();
+    next(); // invoke next() at the end of a request to help with testing!
+  } else if (req.method === 'POST') {
+
+    res.writeHead(200, headers);
+    res.end();
+    next(); // invoke next() at the end of a request to help with testing!
   }
-  next(); // invoke next() at the end of a request to help with testing!
 };
