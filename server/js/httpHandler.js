@@ -20,7 +20,6 @@ module.exports.router = (req, res, next = ()=>{}) => {
   if (req.method === 'GET') {
 
     if (req.url === '/background.jpg') {
-      console.log('fs', fs.readFile);
       fs.readFile(__dirname + '/..' + req.url, function (err, data) {
         if (err) {
           res.writeHead(404, headers);
@@ -69,8 +68,6 @@ module.exports.router = (req, res, next = ()=>{}) => {
         });
       });
     }
-
-    // next(); // invoke next() at the end of a request to help with testing!
   }
 };
 
